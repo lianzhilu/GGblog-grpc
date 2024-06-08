@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+option go_package = "../pb/user";
+
+message UserRequest {
+    string username = 1;
+    string password = 2;
+    int32 gender = 3;
+}
+
+message UserSearchRequest {
+    string keyword = 1;
+    string pagesize = 2;
+    string pagenum = 3;
+}
+
+message UserResponse {
+    int32 id = 1;
+    string username = 2;
+    string password = 3;
+    int32 gender = 4;
+}
+
+message UserCommonResponse {
+    int32 code = 1;
+}
+
+message UserDetailResponse {
+    int32 code = 1;
+    UserResponse user = 2;
+}
+
+message UserSearchResponse {
+    int32 code = 1;
+    repeated UserResponse users = 2;
+}
+
+
+service UserService {
+    // 用户登录
+    rpc UserLogin(UserRequest) returns(UserDetailResponse);
+
+    // 用户注册
+    rpc UserRegister(UserRequest) returns(UserCommonResponse);
+
+    // 查询用户是否存在
+    rpc UserIsExist(UserRequest) returns(UserCommonResponse);
+
+    // 查询用户列表
+    rpc UserList(UserSearchRequest) returns(UserSearchRequest);
+
+    // 通过关键字查询用户
+    rpc UserSearchByKeyword(UserSearchRequest) returns(UserSearchRequest);
+
+    // 编辑用户
+    rpc UserEdit(UserRequest) returns(UserDetailResponse);
+
+    // 删除用户
+    rpc UserDelete(UserRequest) returns(UserCommonResponse);
+
+    // 通过id获取用户信息
+    rpc UserGetInfoByID(UserRequest) returns(UserDetailResponse);
+}
