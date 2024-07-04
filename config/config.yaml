@@ -10,6 +10,11 @@ mysql:
   password: 123456
   name: ggblog
 
+redis:
+  addr: localhost:6379
+  db: 0
+  poolsize: 100
+
 qiniu:
   accesskey: 0Kpw-ItaVA9JTa1ZMiloRUqYRt5Bcof_dOGbbdP9
   secretkey: YaNc-e7DlmtYzQL_SuMDLT5XWGn-VLO_dW_Psbku

@@ -2,14 +2,16 @@ package rpc
 
 import (
 	"ggblog-grpc/config"
-	"ggblog-grpc/idl/pb/user"
+	articlePb "ggblog-grpc/idl/pb/article"
+	userPb "ggblog-grpc/idl/pb/user"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 var (
-	UserClient user.UserServiceClient
+	UserClient    userPb.UserServiceClient
+	ArticleClient articlePb.ArticleServiceClient
 )
 
 func Init() {
@@ -17,14 +19,25 @@ func Init() {
 }
 
 func initClient() {
-	conn, _ := connectServer()
-	UserClient = user.NewUserServiceClient(conn)
+	userConn, _ := connectServer("user")
+	UserClient = userPb.NewUserServiceClient(userConn)
+
+	articleConn, _ := connectServer("article")
+	ArticleClient = articlePb.NewArticleServiceClient(articleConn)
 }
 
-func connectServer() (conn *grpc.ClientConn, err error) {
-	conn, err = grpc.NewClient(
-		config.UserSrv.Addr,
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	)
+func connectServer(name string) (conn *grpc.ClientConn, err error) {
+	if name == "user" {
+		conn, err = grpc.NewClient(
+			config.UserSrv.Addr,
+			grpc.WithTransportCredentials(insecure.NewCredentials()),
+		)
+	} else if name == "article" {
+		conn, err = grpc.NewClient(
+			config.ArticleSrv.Addr,
+			grpc.WithTransportCredentials(insecure.NewCredentials()),
+		)
+	}
+
 	return
 }

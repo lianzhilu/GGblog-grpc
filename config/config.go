@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/spf13/viper"
 )
@@ -20,6 +21,12 @@ type MySQLConfig struct {
 	Name     string
 }
 
+type RedisConfig struct {
+	Addr     string
+	DB       int
+	PoolSize int
+}
+
 type QiniuConfig struct {
 	AccessKey string
 	SecretKey string
@@ -34,6 +41,7 @@ type Service struct {
 var (
 	AppConf    AppConfig
 	MySQLConf  MySQLConfig
+	RedisConf  RedisConfig
 	QiniuConf  QiniuConfig
 	GatewaySrv Service
 	UserSrv    Service
@@ -67,6 +75,13 @@ func InitConfig(dir string) {
 		MySQLConf.Name = mysqlMap["name"]
 	}
 
+	redisMap := viper.GetStringMapString("redis")
+	{
+		RedisConf.Addr = redisMap["addr"]
+		RedisConf.DB, _ = strconv.Atoi(redisMap["db"])
+		RedisConf.PoolSize, _ = strconv.Atoi(redisMap["poolsize"])
+	}
+
 	qiniuMap := viper.GetStringMapString("qiniu")
 	{
 		QiniuConf.AccessKey = qiniuMap["accesskey"]
@@ -89,6 +104,4 @@ func InitConfig(dir string) {
 	{
 		ArticleSrv.Addr = articleMap["addr"].(string)
 	}
-
-	fmt.Println(gatewayMap)
 }

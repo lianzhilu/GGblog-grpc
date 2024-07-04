@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+option go_package = "../pb/article;articlePb";
+
+package articlePb;
+
+message ArticleRequest {
+    string title = 1;
+    string description = 2;
+    string content = 3;
+    int32 userid = 4;
+}
+
+message ArticleSearchRequest {
+    string keyword = 1;
+    int32 userid = 2;
+    int32 pagesize = 3;
+    int32 pagenum = 4;
+}
+
+message ArticleTargetRequest {
+    int32 id = 1;
+    ArticleRequest article = 2;
+}
+
+message ArticleResponse {
+    int32 id = 1;
+    string title = 2;
+    string description = 3;
+    string content = 4;
+    int32 userid = 5;
+    int32 view = 6;
+}
+
+message ArticleStatusResponse {
+    int32 code = 1;
+    string msg = 2;
+}
+
+message ArticleDetailResponse {
+    ArticleStatusResponse status = 1;
+    ArticleResponse article = 2;
+}
+
+message ArticleCommonResponse {
+    ArticleStatusResponse status = 1;
+}
+
+message ArticleSearchResponse {
+    ArticleStatusResponse status = 1;
+    repeated ArticleResponse articles = 2;
+}
+
+
+
+service ArticleService {
+    // 添加文章
+    rpc ArticleCreate(ArticleRequest) returns(ArticleCommonResponse);
+
+    // 查询单个文章的详细信息
+    rpc ArticleDetail(ArticleTargetRequest) returns(ArticleDetailResponse);
+
+    // 根据关键字搜索文章
+    rpc ArticleSearchBykeyword(ArticleSearchRequest) returns(ArticleSearchResponse);
+
+    // 查询某个用户发布的所有文章
+    rpc ArticleSearchByUser(ArticleSearchRequest) returns(ArticleSearchResponse);
+
+    // 查询文章列表
+    rpc ArticleList(ArticleSearchRequest) returns(ArticleSearchResponse);
+
+    // 编辑文章
+    rpc ArticleEdit(ArticleTargetRequest) returns(ArticleDetailResponse);
+
+    // 删除文章
+    rpc ArticleDelete(ArticleTargetRequest) returns(ArticleCommonResponse);
+}

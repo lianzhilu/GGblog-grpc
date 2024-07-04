@@ -4,7 +4,7 @@
 // - protoc             v5.27.0
 // source: user.proto
 
-package user
+package userPb
 
 import (
 	context "context"
@@ -29,13 +29,13 @@ type UserServiceClient interface {
 	// 查询用户是否存在
 	UserIsExist(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserCommonResponse, error)
 	// 查询用户列表
-	UserList(ctx context.Context, in *UserSearchRequest, opts ...grpc.CallOption) (*UserSearchRequest, error)
+	UserList(ctx context.Context, in *UserSearchRequest, opts ...grpc.CallOption) (*UserSearchResponse, error)
 	// 通过关键字查询用户
-	UserSearchByKeyword(ctx context.Context, in *UserSearchRequest, opts ...grpc.CallOption) (*UserSearchRequest, error)
+	UserSearchByKeyword(ctx context.Context, in *UserSearchRequest, opts ...grpc.CallOption) (*UserSearchResponse, error)
 	// 编辑用户
-	UserEdit(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserDetailResponse, error)
+	UserEdit(ctx context.Context, in *UserTargetRequest, opts ...grpc.CallOption) (*UserCommonResponse, error)
 	// 删除用户
-	UserDelete(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserCommonResponse, error)
+	UserDelete(ctx context.Context, in *UserTargetRequest, opts ...grpc.CallOption) (*UserCommonResponse, error)
 	// 通过id获取用户信息
 	UserGetInfoByID(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserDetailResponse, error)
 }
@@ -50,7 +50,7 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 
 func (c *userServiceClient) UserLogin(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserDetailResponse, error) {
 	out := new(UserDetailResponse)
-	err := c.cc.Invoke(ctx, "/UserService/UserLogin", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/userPb.UserService/UserLogin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (c *userServiceClient) UserLogin(ctx context.Context, in *UserRequest, opts
 
 func (c *userServiceClient) UserRegister(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserCommonResponse, error) {
 	out := new(UserCommonResponse)
-	err := c.cc.Invoke(ctx, "/UserService/UserRegister", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/userPb.UserService/UserRegister", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -68,43 +68,43 @@ func (c *userServiceClient) UserRegister(ctx context.Context, in *UserRequest, o
 
 func (c *userServiceClient) UserIsExist(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserCommonResponse, error) {
 	out := new(UserCommonResponse)
-	err := c.cc.Invoke(ctx, "/UserService/UserIsExist", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/userPb.UserService/UserIsExist", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userServiceClient) UserList(ctx context.Context, in *UserSearchRequest, opts ...grpc.CallOption) (*UserSearchRequest, error) {
-	out := new(UserSearchRequest)
-	err := c.cc.Invoke(ctx, "/UserService/UserList", in, out, opts...)
+func (c *userServiceClient) UserList(ctx context.Context, in *UserSearchRequest, opts ...grpc.CallOption) (*UserSearchResponse, error) {
+	out := new(UserSearchResponse)
+	err := c.cc.Invoke(ctx, "/userPb.UserService/UserList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userServiceClient) UserSearchByKeyword(ctx context.Context, in *UserSearchRequest, opts ...grpc.CallOption) (*UserSearchRequest, error) {
-	out := new(UserSearchRequest)
-	err := c.cc.Invoke(ctx, "/UserService/UserSearchByKeyword", in, out, opts...)
+func (c *userServiceClient) UserSearchByKeyword(ctx context.Context, in *UserSearchRequest, opts ...grpc.CallOption) (*UserSearchResponse, error) {
+	out := new(UserSearchResponse)
+	err := c.cc.Invoke(ctx, "/userPb.UserService/UserSearchByKeyword", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userServiceClient) UserEdit(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserDetailResponse, error) {
-	out := new(UserDetailResponse)
-	err := c.cc.Invoke(ctx, "/UserService/UserEdit", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userServiceClient) UserDelete(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserCommonResponse, error) {
+func (c *userServiceClient) UserEdit(ctx context.Context, in *UserTargetRequest, opts ...grpc.CallOption) (*UserCommonResponse, error) {
 	out := new(UserCommonResponse)
-	err := c.cc.Invoke(ctx, "/UserService/UserDelete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/userPb.UserService/UserEdit", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) UserDelete(ctx context.Context, in *UserTargetRequest, opts ...grpc.CallOption) (*UserCommonResponse, error) {
+	out := new(UserCommonResponse)
+	err := c.cc.Invoke(ctx, "/userPb.UserService/UserDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +113,7 @@ func (c *userServiceClient) UserDelete(ctx context.Context, in *UserRequest, opt
 
 func (c *userServiceClient) UserGetInfoByID(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserDetailResponse, error) {
 	out := new(UserDetailResponse)
-	err := c.cc.Invoke(ctx, "/UserService/UserGetInfoByID", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/userPb.UserService/UserGetInfoByID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -131,13 +131,13 @@ type UserServiceServer interface {
 	// 查询用户是否存在
 	UserIsExist(context.Context, *UserRequest) (*UserCommonResponse, error)
 	// 查询用户列表
-	UserList(context.Context, *UserSearchRequest) (*UserSearchRequest, error)
+	UserList(context.Context, *UserSearchRequest) (*UserSearchResponse, error)
 	// 通过关键字查询用户
-	UserSearchByKeyword(context.Context, *UserSearchRequest) (*UserSearchRequest, error)
+	UserSearchByKeyword(context.Context, *UserSearchRequest) (*UserSearchResponse, error)
 	// 编辑用户
-	UserEdit(context.Context, *UserRequest) (*UserDetailResponse, error)
+	UserEdit(context.Context, *UserTargetRequest) (*UserCommonResponse, error)
 	// 删除用户
-	UserDelete(context.Context, *UserRequest) (*UserCommonResponse, error)
+	UserDelete(context.Context, *UserTargetRequest) (*UserCommonResponse, error)
 	// 通过id获取用户信息
 	UserGetInfoByID(context.Context, *UserRequest) (*UserDetailResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
@@ -156,16 +156,16 @@ func (UnimplementedUserServiceServer) UserRegister(context.Context, *UserRequest
 func (UnimplementedUserServiceServer) UserIsExist(context.Context, *UserRequest) (*UserCommonResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserIsExist not implemented")
 }
-func (UnimplementedUserServiceServer) UserList(context.Context, *UserSearchRequest) (*UserSearchRequest, error) {
+func (UnimplementedUserServiceServer) UserList(context.Context, *UserSearchRequest) (*UserSearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserList not implemented")
 }
-func (UnimplementedUserServiceServer) UserSearchByKeyword(context.Context, *UserSearchRequest) (*UserSearchRequest, error) {
+func (UnimplementedUserServiceServer) UserSearchByKeyword(context.Context, *UserSearchRequest) (*UserSearchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserSearchByKeyword not implemented")
 }
-func (UnimplementedUserServiceServer) UserEdit(context.Context, *UserRequest) (*UserDetailResponse, error) {
+func (UnimplementedUserServiceServer) UserEdit(context.Context, *UserTargetRequest) (*UserCommonResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserEdit not implemented")
 }
-func (UnimplementedUserServiceServer) UserDelete(context.Context, *UserRequest) (*UserCommonResponse, error) {
+func (UnimplementedUserServiceServer) UserDelete(context.Context, *UserTargetRequest) (*UserCommonResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserDelete not implemented")
 }
 func (UnimplementedUserServiceServer) UserGetInfoByID(context.Context, *UserRequest) (*UserDetailResponse, error) {
@@ -194,7 +194,7 @@ func _UserService_UserLogin_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UserService/UserLogin",
+		FullMethod: "/userPb.UserService/UserLogin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).UserLogin(ctx, req.(*UserRequest))
@@ -212,7 +212,7 @@ func _UserService_UserRegister_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UserService/UserRegister",
+		FullMethod: "/userPb.UserService/UserRegister",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).UserRegister(ctx, req.(*UserRequest))
@@ -230,7 +230,7 @@ func _UserService_UserIsExist_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UserService/UserIsExist",
+		FullMethod: "/userPb.UserService/UserIsExist",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).UserIsExist(ctx, req.(*UserRequest))
@@ -248,7 +248,7 @@ func _UserService_UserList_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UserService/UserList",
+		FullMethod: "/userPb.UserService/UserList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).UserList(ctx, req.(*UserSearchRequest))
@@ -266,7 +266,7 @@ func _UserService_UserSearchByKeyword_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UserService/UserSearchByKeyword",
+		FullMethod: "/userPb.UserService/UserSearchByKeyword",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).UserSearchByKeyword(ctx, req.(*UserSearchRequest))
@@ -275,7 +275,7 @@ func _UserService_UserSearchByKeyword_Handler(srv interface{}, ctx context.Conte
 }
 
 func _UserService_UserEdit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserRequest)
+	in := new(UserTargetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -284,16 +284,16 @@ func _UserService_UserEdit_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UserService/UserEdit",
+		FullMethod: "/userPb.UserService/UserEdit",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).UserEdit(ctx, req.(*UserRequest))
+		return srv.(UserServiceServer).UserEdit(ctx, req.(*UserTargetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _UserService_UserDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserRequest)
+	in := new(UserTargetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -302,10 +302,10 @@ func _UserService_UserDelete_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UserService/UserDelete",
+		FullMethod: "/userPb.UserService/UserDelete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).UserDelete(ctx, req.(*UserRequest))
+		return srv.(UserServiceServer).UserDelete(ctx, req.(*UserTargetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -320,7 +320,7 @@ func _UserService_UserGetInfoByID_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UserService/UserGetInfoByID",
+		FullMethod: "/userPb.UserService/UserGetInfoByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).UserGetInfoByID(ctx, req.(*UserRequest))
@@ -332,7 +332,7 @@ func _UserService_UserGetInfoByID_Handler(srv interface{}, ctx context.Context, 
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var UserService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "UserService",
+	ServiceName: "userPb.UserService",
 	HandlerType: (*UserServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

@@ -1,6 +1,12 @@
 package controller
 
 import (
+	"fmt"
+	"ggblog-grpc/apps/gateway/rpc"
+	articlePb "ggblog-grpc/idl/pb/article"
+	"net/http"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,7 +17,20 @@ func AddArticle(ctx *gin.Context) {
 
 // 查询单个文章的详细信息
 func GetArticleByID(ctx *gin.Context) {
+	var articleReq articlePb.ArticleTargetRequest
+	id, _ := strconv.Atoi(ctx.Param("id"))
+	articleReq.Id = int32(id)
 
+	resp, err := rpc.ArticleDetail(ctx, &articleReq)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"code":    resp.Status.Code,
+		"msg":     resp.Status.Msg,
+		"article": resp.Article,
+	})
 }
 
 // 根据关键字搜索文章

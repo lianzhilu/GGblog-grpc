@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-option go_package = "../pb/user";
+option go_package = "../pb/user;userPb";
+
+package userPb;
 
 message UserRequest {
     string username = 1;
@@ -10,8 +12,13 @@ message UserRequest {
 
 message UserSearchRequest {
     string keyword = 1;
-    string pagesize = 2;
-    string pagenum = 3;
+    int32 pagesize = 2;
+    int32 pagenum = 3;
+}
+
+message UserTargetRequest {
+    int32 id = 1;
+    UserRequest user = 2;
 }
 
 message UserResponse {
@@ -21,17 +28,22 @@ message UserResponse {
     int32 gender = 4;
 }
 
-message UserCommonResponse {
+message UserStatusResponse {
     int32 code = 1;
+    string msg = 2;
+}
+
+message UserCommonResponse {
+    UserStatusResponse status = 1;
 }
 
 message UserDetailResponse {
-    int32 code = 1;
+    UserStatusResponse status = 1;
     UserResponse user = 2;
 }
 
 message UserSearchResponse {
-    int32 code = 1;
+    UserStatusResponse status = 1;
     repeated UserResponse users = 2;
 }
 
@@ -47,16 +59,16 @@ service UserService {
     rpc UserIsExist(UserRequest) returns(UserCommonResponse);
 
     // 查询用户列表
-    rpc UserList(UserSearchRequest) returns(UserSearchRequest);
+    rpc UserList(UserSearchRequest) returns(UserSearchResponse);
 
     // 通过关键字查询用户
-    rpc UserSearchByKeyword(UserSearchRequest) returns(UserSearchRequest);
+    rpc UserSearchByKeyword(UserSearchRequest) returns(UserSearchResponse);
 
     // 编辑用户
-    rpc UserEdit(UserRequest) returns(UserDetailResponse);
+    rpc UserEdit(UserTargetRequest) returns(UserCommonResponse);
 
     // 删除用户
-    rpc UserDelete(UserRequest) returns(UserCommonResponse);
+    rpc UserDelete(UserTargetRequest) returns(UserCommonResponse);
 
     // 通过id获取用户信息
     rpc UserGetInfoByID(UserRequest) returns(UserDetailResponse);

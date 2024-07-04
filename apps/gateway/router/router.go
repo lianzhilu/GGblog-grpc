@@ -44,7 +44,7 @@ func InitRouter() {
 		})
 
 		// 登录
-		// routerV1.POST("/login", controller.Login)
+		routerV1.POST("/login", controller.Login)
 
 		// user模块
 		// 添加用户
